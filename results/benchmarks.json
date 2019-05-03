@@ -1,0 +1,47 @@
+{
+    "solver.Solver.peakmem_solver": {
+        "code": "class Solver:\n    def peakmem_solver(self, data, anisotropy):\n        solver.solver(\n                grid=data['grid'],\n                model=data[anisotropy],\n                sfield=data['sfield'],\n                sslsolver=True,\n                semicoarsening=True,\n                linerelaxation=True,\n                maxit=1,\n                verb=2)\n\n    def setup_cache(self):\n    \n        # Load data.\n        DATA = np.load(join(dirname(__file__), 'data/salt_data.npz'),\n                       allow_pickle=True)\n        res = DATA['res'][()]\n        mesh = DATA['mesh'][()]\n    \n        # Create grid.\n        grid = utils.TensorMesh(\n                [mesh['hx'], mesh['hy'], mesh['hz']], mesh['x0'])\n    \n        # Get source field.\n        sfield = utils.get_source_field(grid, mesh['src'], mesh['freq'], 0)\n    \n        data = {\n            'grid': grid,\n            'sfield': sfield,\n        }\n        for anisotropy in self.params[0]:  # size\n    \n            # Create model.\n            if anisotropy == 'iso':\n                model = utils.Model(grid, res, freq=mesh['freq'])\n            elif anisotropy == 'vti':\n                model = utils.Model(grid, res, res_z=2*res, freq=mesh['freq'])\n            else:\n                model = utils.Model(grid, res, 2*res, 3*res, freq=mesh['freq'])\n    \n            data[anisotropy] = model\n    \n        # Run one iteration to ensure functions are jited.\n        solver.solver(grid, model, sfield, sslsolver=True, maxit=1, verb=2)\n    \n        return data",
+        "name": "solver.Solver.peakmem_solver",
+        "param_names": [
+            "anisotropy"
+        ],
+        "params": [
+            [
+                "'iso'",
+                "'vti'",
+                "'tri'"
+            ]
+        ],
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/solver.py:20",
+        "timeout": 60.0,
+        "type": "peakmemory",
+        "unit": "bytes",
+        "version": "4cd2eea30db043c060f0b2dcd152aab2643aaccb37fb42f8273cdd978feb11d7"
+    },
+    "solver.Solver.time_solver": {
+        "code": "class Solver:\n    def time_solver(self, data, anisotropy):\n        solver.solver(\n                grid=data['grid'],\n                model=data[anisotropy],\n                sfield=data['sfield'],\n                sslsolver=True,\n                semicoarsening=True,\n                linerelaxation=True,\n                maxit=1,\n                verb=2)\n\n    def setup_cache(self):\n    \n        # Load data.\n        DATA = np.load(join(dirname(__file__), 'data/salt_data.npz'),\n                       allow_pickle=True)\n        res = DATA['res'][()]\n        mesh = DATA['mesh'][()]\n    \n        # Create grid.\n        grid = utils.TensorMesh(\n                [mesh['hx'], mesh['hy'], mesh['hz']], mesh['x0'])\n    \n        # Get source field.\n        sfield = utils.get_source_field(grid, mesh['src'], mesh['freq'], 0)\n    \n        data = {\n            'grid': grid,\n            'sfield': sfield,\n        }\n        for anisotropy in self.params[0]:  # size\n    \n            # Create model.\n            if anisotropy == 'iso':\n                model = utils.Model(grid, res, freq=mesh['freq'])\n            elif anisotropy == 'vti':\n                model = utils.Model(grid, res, res_z=2*res, freq=mesh['freq'])\n            else:\n                model = utils.Model(grid, res, 2*res, 3*res, freq=mesh['freq'])\n    \n            data[anisotropy] = model\n    \n        # Run one iteration to ensure functions are jited.\n        solver.solver(grid, model, sfield, sslsolver=True, maxit=1, verb=2)\n    \n        return data",
+        "min_run_count": 2,
+        "name": "solver.Solver.time_solver",
+        "number": 0,
+        "param_names": [
+            "anisotropy"
+        ],
+        "params": [
+            [
+                "'iso'",
+                "'vti'",
+                "'tri'"
+            ]
+        ],
+        "processes": 2,
+        "repeat": 0,
+        "sample_time": 0.01,
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/solver.py:20",
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "f2274860cf89450771d5bdc3cb52742689e31cda27fea085cae7b3e50a8b6ccd",
+        "warmup_time": -1
+    },
+    "version": 2
+}
