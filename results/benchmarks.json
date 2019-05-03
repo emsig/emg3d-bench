@@ -1,46 +1,100 @@
 {
-    "solver.Solver.peakmem_solver": {
-        "code": "class Solver:\n    def peakmem_solver(self, data, anisotropy):\n        solver.solver(\n                grid=data['grid'],\n                model=data[anisotropy],\n                sfield=data['sfield'],\n                sslsolver=True,\n                semicoarsening=True,\n                linerelaxation=True,\n                maxit=1,\n                verb=2)\n\n    def setup_cache(self):\n    \n        # Load data.\n        DATA = np.load(join(dirname(__file__), 'data/salt_data.npz'),\n                       allow_pickle=True)\n        res = DATA['res'][()]\n        mesh = DATA['mesh'][()]\n    \n        # Create grid.\n        grid = utils.TensorMesh(\n                [mesh['hx'], mesh['hy'], mesh['hz']], mesh['x0'])\n    \n        # Get source field.\n        sfield = utils.get_source_field(grid, mesh['src'], mesh['freq'], 0)\n    \n        data = {\n            'grid': grid,\n            'sfield': sfield,\n        }\n        for anisotropy in self.params[0]:  # size\n    \n            # Create model.\n            if anisotropy == 'iso':\n                model = utils.Model(grid, res, freq=mesh['freq'])\n            elif anisotropy == 'vti':\n                model = utils.Model(grid, res, res_z=2*res, freq=mesh['freq'])\n            else:\n                model = utils.Model(grid, res, 2*res, 3*res, freq=mesh['freq'])\n    \n            data[anisotropy] = model\n    \n        # Run one iteration to ensure functions are jited.\n        solver.solver(grid, model, sfield, sslsolver=True, maxit=1, verb=2)\n    \n        return data",
-        "name": "solver.Solver.peakmem_solver",
+    "solver.SolverMemory.peakmem_solver": {
+        "code": "class SolverMemory:\n    def peakmem_solver(self, sslsolver, anisotropy):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=2)\n\n    def setup(self, sslsolver, anisotropy):\n    \n        # Create grid.\n        self.grid = utils.TensorMesh(\n                [MESH['hx'], MESH['hy'], MESH['hz']], MESH['x0'])\n    \n        # Get source field.\n        self.sfield = utils.get_source_field(\n                self.grid, MESH['src'], MESH['freq'], 0)\n    \n        # Create model.\n        inp = {'grid': self.grid, 'res_x': RES, 'freq': MESH['freq']}\n        if anisotropy == 'iso':\n            self.model = utils.Model(**inp)\n        elif anisotropy == 'vti':\n            self.model = utils.Model(res_z=3*RES, **inp)\n        else:\n            self.model = utils.Model(res_y=2*RES, res_z=3*RES, **inp)",
+        "name": "solver.SolverMemory.peakmem_solver",
         "param_names": [
+            "sslsolver",
             "anisotropy"
         ],
         "params": [
+            [
+                "True",
+                "False"
+            ],
             [
                 "'iso'",
                 "'vti'",
                 "'tri'"
             ]
         ],
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/solver.py:20",
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "4cd2eea30db043c060f0b2dcd152aab2643aaccb37fb42f8273cdd978feb11d7"
+        "version": "33cc8024c90f37ab21d8587200c699bb7f870373b6d06c3550d1b131921907bd"
     },
-    "solver.Solver.time_solver": {
-        "code": "class Solver:\n    def time_solver(self, data, anisotropy):\n        solver.solver(\n                grid=data['grid'],\n                model=data[anisotropy],\n                sfield=data['sfield'],\n                sslsolver=True,\n                semicoarsening=True,\n                linerelaxation=True,\n                maxit=1,\n                verb=2)\n\n    def setup_cache(self):\n    \n        # Load data.\n        DATA = np.load(join(dirname(__file__), 'data/salt_data.npz'),\n                       allow_pickle=True)\n        res = DATA['res'][()]\n        mesh = DATA['mesh'][()]\n    \n        # Create grid.\n        grid = utils.TensorMesh(\n                [mesh['hx'], mesh['hy'], mesh['hz']], mesh['x0'])\n    \n        # Get source field.\n        sfield = utils.get_source_field(grid, mesh['src'], mesh['freq'], 0)\n    \n        data = {\n            'grid': grid,\n            'sfield': sfield,\n        }\n        for anisotropy in self.params[0]:  # size\n    \n            # Create model.\n            if anisotropy == 'iso':\n                model = utils.Model(grid, res, freq=mesh['freq'])\n            elif anisotropy == 'vti':\n                model = utils.Model(grid, res, res_z=2*res, freq=mesh['freq'])\n            else:\n                model = utils.Model(grid, res, 2*res, 3*res, freq=mesh['freq'])\n    \n            data[anisotropy] = model\n    \n        # Run one iteration to ensure functions are jited.\n        solver.solver(grid, model, sfield, sslsolver=True, maxit=1, verb=2)\n    \n        return data",
+    "solver.SolverTimeCycle.time_solver": {
+        "code": "class SolverTimeCycle:\n    def time_solver(self, cycle):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle=cycle,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=2)\n\n    def setup(self, cycle):\n    \n        # Create grid.\n        self.grid = utils.TensorMesh(\n                [MESH['hx'], MESH['hy'], MESH['hz']], MESH['x0'])\n    \n        # Get source field.\n        self.sfield = utils.get_source_field(\n                self.grid, MESH['src'], MESH['freq'], 0)\n    \n        # Create model.\n        inp = {'grid': self.grid, 'res_x': RES, 'freq': MESH['freq']}\n        self.model = utils.Model(**inp)",
         "min_run_count": 2,
-        "name": "solver.Solver.time_solver",
+        "name": "solver.SolverTimeCycle.time_solver",
         "number": 0,
         "param_names": [
-            "anisotropy"
+            "cycle"
         ],
         "params": [
             [
-                "'iso'",
-                "'vti'",
-                "'tri'"
+                "'V'",
+                "'W'",
+                "'F'"
             ]
         ],
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/solver.py:20",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "f2274860cf89450771d5bdc3cb52742689e31cda27fea085cae7b3e50a8b6ccd",
+        "version": "4cd91fa854cbe318029ee3f2dcd20d520abfb8623a60636b49cbf984c930b43b",
+        "warmup_time": -1
+    },
+    "solver.SolverTimeMG.time_solver": {
+        "code": "class SolverTimeMG:\n    def time_solver(self, semicoarsening, linerelaxation):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                semicoarsening=semicoarsening,\n                linerelaxation=linerelaxation,\n                verb=2)\n\n    def setup(self, semicoarsening, linerelaxation):\n    \n        # Create grid.\n        self.grid = utils.TensorMesh(\n                [MESH['hx'], MESH['hy'], MESH['hz']], MESH['x0'])\n    \n        # Get source field.\n        self.sfield = utils.get_source_field(\n                self.grid, MESH['src'], MESH['freq'], 0)\n    \n        # Create model.\n        inp = {'grid': self.grid, 'res_x': RES, 'freq': MESH['freq']}\n        self.model = utils.Model(**inp)",
+        "min_run_count": 2,
+        "name": "solver.SolverTimeMG.time_solver",
+        "number": 0,
+        "param_names": [
+            "semicoarsening",
+            "linerelaxation"
+        ],
+        "params": [
+            [
+                "True",
+                "False"
+            ],
+            [
+                "True",
+                "False"
+            ]
+        ],
+        "processes": 2,
+        "repeat": 0,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "20dd5b456f8be3cb4bc3d3548abd384b16d6ae59e44df6d272e4734947721526",
+        "warmup_time": -1
+    },
+    "solver.SolverTimeSSL.time_solver": {
+        "code": "class SolverTimeSSL:\n    def time_solver(self, sslsolver):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=2)\n\n    def setup(self, sslsolver):\n    \n        # Create grid.\n        self.grid = utils.TensorMesh(\n                [MESH['hx'], MESH['hy'], MESH['hz']], MESH['x0'])\n    \n        # Get source field.\n        self.sfield = utils.get_source_field(\n                self.grid, MESH['src'], MESH['freq'], 0)\n    \n        # Create model.\n        inp = {'grid': self.grid, 'res_x': RES, 'freq': MESH['freq']}\n        self.model = utils.Model(**inp)",
+        "min_run_count": 2,
+        "name": "solver.SolverTimeSSL.time_solver",
+        "number": 0,
+        "param_names": [
+            "sslsolver"
+        ],
+        "params": [
+            [
+                "True",
+                "False"
+            ]
+        ],
+        "processes": 2,
+        "repeat": 0,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "2765eebf61e8132d5027fe12ddf7bff1aef1ba6ca84653b1ddb51a2513ad54a1",
         "warmup_time": -1
     },
     "version": 2
