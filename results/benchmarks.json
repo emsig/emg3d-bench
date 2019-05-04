@@ -1,6 +1,76 @@
 {
+    "solver.ResidualMemory.peakmem_smoothing": {
+        "code": "class ResidualMemory:\n    def peakmem_smoothing(self):\n        solver.residual(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0)\n\n    def setup(self):\n        self.grid, self.model, self.sfield = get_model(case='big')",
+        "name": "solver.ResidualMemory.peakmem_smoothing",
+        "param_names": [],
+        "params": [],
+        "timeout": 60.0,
+        "type": "peakmemory",
+        "unit": "bytes",
+        "version": "3688ae8202fa14e4c6b6b21aec2d42b6d0054536a1d05cdf2d33d0bf74b10db7"
+    },
+    "solver.ResidualTime.time_smoothing": {
+        "code": "class ResidualTime:\n    def time_smoothing(self):\n        solver.residual(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0)\n\n    def setup(self):\n        self.grid, self.model, self.sfield = get_model(case='big')",
+        "min_run_count": 2,
+        "name": "solver.ResidualTime.time_smoothing",
+        "number": 0,
+        "param_names": [],
+        "params": [],
+        "processes": 2,
+        "repeat": 0,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "e0fc0a6a26e6d69bd6992ac4394963d2dcabe2be0ad01ee554515fba6c496732",
+        "warmup_time": -1
+    },
+    "solver.SmoothingMemory.peakmem_smoothing": {
+        "code": "class SmoothingMemory:\n    def peakmem_smoothing(self, ldir):\n        solver.smoothing(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0,\n                nu=2,\n                ldir=ldir)\n\n    def setup(self, ldir):\n        self.grid, self.model, self.sfield = get_model(case='big')",
+        "name": "solver.SmoothingMemory.peakmem_smoothing",
+        "param_names": [
+            "ldir"
+        ],
+        "params": [
+            [
+                "0",
+                "1",
+                "2",
+                "3"
+            ]
+        ],
+        "timeout": 60.0,
+        "type": "peakmemory",
+        "unit": "bytes",
+        "version": "48028d0482df7d4540077180a13b1cbcbd0fdbd076f7fb26ceba7a00c76fe538"
+    },
+    "solver.SmoothingTime.time_smoothing": {
+        "code": "class SmoothingTime:\n    def time_smoothing(self, ldir):\n        solver.smoothing(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0,\n                nu=2,\n                ldir=ldir)\n\n    def setup(self, ldir):\n        self.grid, self.model, self.sfield = get_model(case='big')",
+        "min_run_count": 2,
+        "name": "solver.SmoothingTime.time_smoothing",
+        "number": 0,
+        "param_names": [
+            "ldir"
+        ],
+        "params": [
+            [
+                "0",
+                "1",
+                "2",
+                "3"
+            ]
+        ],
+        "processes": 2,
+        "repeat": 0,
+        "sample_time": 0.01,
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "961aca7b1d8fd15b411dcc49472698b300e4b2e312b0a85772e2cf6914fef775",
+        "warmup_time": -1
+    },
     "solver.SolverMemory.peakmem_solver": {
-        "code": "class SolverMemory:\n    def peakmem_solver(self, sslsolver, anisotropy):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=2)\n\n    def setup(self, sslsolver, anisotropy):\n    \n        # Create grid.\n        self.grid = utils.TensorMesh(\n                [MESH['hx'], MESH['hy'], MESH['hz']], MESH['x0'])\n    \n        # Get source field.\n        self.sfield = utils.get_source_field(\n                self.grid, MESH['src'], MESH['freq'], 0)\n    \n        # Create model.\n        inp = {'grid': self.grid, 'res_x': RES, 'freq': MESH['freq']}\n        if anisotropy == 'iso':\n            self.model = utils.Model(**inp)\n        elif anisotropy == 'vti':\n            self.model = utils.Model(res_z=3*RES, **inp)\n        else:\n            self.model = utils.Model(res_y=2*RES, res_z=3*RES, **inp)",
+        "code": "class SolverMemory:\n    def peakmem_solver(self, sslsolver, anisotropy):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, sslsolver, anisotropy):\n        self.grid, self.model, self.sfield = get_model(anisotropy)",
         "name": "solver.SolverMemory.peakmem_solver",
         "param_names": [
             "sslsolver",
@@ -20,10 +90,10 @@
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "33cc8024c90f37ab21d8587200c699bb7f870373b6d06c3550d1b131921907bd"
+        "version": "303854593e78d23d67e0067398f2d62c13a0668549a5b15056c327ebd8c7c5de"
     },
     "solver.SolverTimeCycle.time_solver": {
-        "code": "class SolverTimeCycle:\n    def time_solver(self, cycle):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle=cycle,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=2)\n\n    def setup(self, cycle):\n    \n        # Create grid.\n        self.grid = utils.TensorMesh(\n                [MESH['hx'], MESH['hy'], MESH['hz']], MESH['x0'])\n    \n        # Get source field.\n        self.sfield = utils.get_source_field(\n                self.grid, MESH['src'], MESH['freq'], 0)\n    \n        # Create model.\n        inp = {'grid': self.grid, 'res_x': RES, 'freq': MESH['freq']}\n        self.model = utils.Model(**inp)",
+        "code": "class SolverTimeCycle:\n    def time_solver(self, cycle):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle=cycle,\n                sslsolver=False,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, cycle):\n        self.grid, self.model, self.sfield = get_model()",
         "min_run_count": 2,
         "name": "solver.SolverTimeCycle.time_solver",
         "number": 0,
@@ -43,11 +113,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "4cd91fa854cbe318029ee3f2dcd20d520abfb8623a60636b49cbf984c930b43b",
+        "version": "d868a8758b04fb33cf43a14f365ff3b2b8eae79ea4a3c859f4ecd6548ae1c5e5",
         "warmup_time": -1
     },
     "solver.SolverTimeMG.time_solver": {
-        "code": "class SolverTimeMG:\n    def time_solver(self, semicoarsening, linerelaxation):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                semicoarsening=semicoarsening,\n                linerelaxation=linerelaxation,\n                verb=2)\n\n    def setup(self, semicoarsening, linerelaxation):\n    \n        # Create grid.\n        self.grid = utils.TensorMesh(\n                [MESH['hx'], MESH['hy'], MESH['hz']], MESH['x0'])\n    \n        # Get source field.\n        self.sfield = utils.get_source_field(\n                self.grid, MESH['src'], MESH['freq'], 0)\n    \n        # Create model.\n        inp = {'grid': self.grid, 'res_x': RES, 'freq': MESH['freq']}\n        self.model = utils.Model(**inp)",
+        "code": "class SolverTimeMG:\n    def time_solver(self, semicoarsening, linerelaxation):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=False,\n                semicoarsening=semicoarsening,\n                linerelaxation=linerelaxation,\n                verb=VERB)\n\n    def setup(self, semicoarsening, linerelaxation):\n        self.grid, self.model, self.sfield = get_model()",
         "min_run_count": 2,
         "name": "solver.SolverTimeMG.time_solver",
         "number": 0,
@@ -71,11 +141,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "20dd5b456f8be3cb4bc3d3548abd384b16d6ae59e44df6d272e4734947721526",
+        "version": "b2ca196c1f131b3c44af22b9407648f9bbb3fa533f2c375c331e404aa86c019c",
         "warmup_time": -1
     },
     "solver.SolverTimeSSL.time_solver": {
-        "code": "class SolverTimeSSL:\n    def time_solver(self, sslsolver):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=2)\n\n    def setup(self, sslsolver):\n    \n        # Create grid.\n        self.grid = utils.TensorMesh(\n                [MESH['hx'], MESH['hy'], MESH['hz']], MESH['x0'])\n    \n        # Get source field.\n        self.sfield = utils.get_source_field(\n                self.grid, MESH['src'], MESH['freq'], 0)\n    \n        # Create model.\n        inp = {'grid': self.grid, 'res_x': RES, 'freq': MESH['freq']}\n        self.model = utils.Model(**inp)",
+        "code": "class SolverTimeSSL:\n    def time_solver(self, sslsolver):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, sslsolver):\n        self.grid, self.model, self.sfield = get_model()",
         "min_run_count": 2,
         "name": "solver.SolverTimeSSL.time_solver",
         "number": 0,
@@ -94,7 +164,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "2765eebf61e8132d5027fe12ddf7bff1aef1ba6ca84653b1ddb51a2513ad54a1",
+        "version": "d17e52b860150d79a48b716456f34e81e968e39e2436caddeb2a2f7739df6be9",
         "warmup_time": -1
     },
     "version": 2
