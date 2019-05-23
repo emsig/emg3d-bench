@@ -1,35 +1,50 @@
 {
     "solver.ResidualMemory.peakmem_smoothing": {
-        "code": "class ResidualMemory:\n    def peakmem_smoothing(self):\n        solver.residual(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0)\n\n    def setup(self):\n        self.grid, self.model, self.sfield = get_model(case='big')",
+        "code": "class ResidualMemory:\n    def peakmem_smoothing(self, size):\n        solver.residual(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0)\n\n    def setup(self, size):\n        self.grid, self.model, self.sfield = get_model(size)",
         "name": "solver.ResidualMemory.peakmem_smoothing",
-        "param_names": [],
-        "params": [],
+        "param_names": [
+            "size"
+        ],
+        "params": [
+            [
+                "'small'",
+                "'big'"
+            ]
+        ],
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "3688ae8202fa14e4c6b6b21aec2d42b6d0054536a1d05cdf2d33d0bf74b10db7"
+        "version": "eae9dd179edd7f44d63f6e86f327c5d76e21bba96edacaf5a28ce5e9055a8c42"
     },
     "solver.ResidualTime.time_smoothing": {
-        "code": "class ResidualTime:\n    def time_smoothing(self):\n        solver.residual(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0)\n\n    def setup(self):\n        self.grid, self.model, self.sfield = get_model(case='big')",
+        "code": "class ResidualTime:\n    def time_smoothing(self, size):\n        solver.residual(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0)\n\n    def setup(self, size):\n        self.grid, self.model, self.sfield = get_model(size)",
         "min_run_count": 2,
         "name": "solver.ResidualTime.time_smoothing",
         "number": 0,
-        "param_names": [],
-        "params": [],
+        "param_names": [
+            "size"
+        ],
+        "params": [
+            [
+                "'small'",
+                "'big'"
+            ]
+        ],
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "e0fc0a6a26e6d69bd6992ac4394963d2dcabe2be0ad01ee554515fba6c496732",
+        "version": "0f442041c850176881c31a3df053ae03c732b2a410c43ef5b85c985662dfd303",
         "warmup_time": -1
     },
     "solver.SmoothingMemory.peakmem_smoothing": {
-        "code": "class SmoothingMemory:\n    def peakmem_smoothing(self, ldir):\n        solver.smoothing(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0,\n                nu=2,\n                ldir=ldir)\n\n    def setup(self, ldir):\n        self.grid, self.model, self.sfield = get_model(case='big')",
+        "code": "class SmoothingMemory:\n    def peakmem_smoothing(self, ldir, size):\n        solver.smoothing(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0,\n                nu=2,\n                ldir=ldir)\n\n    def setup(self, ldir, size):\n        self.grid, self.model, self.sfield = get_model(size)",
         "name": "solver.SmoothingMemory.peakmem_smoothing",
         "param_names": [
-            "ldir"
+            "ldir",
+            "size"
         ],
         "params": [
             [
@@ -37,20 +52,25 @@
                 "1",
                 "2",
                 "3"
+            ],
+            [
+                "'small'",
+                "'big'"
             ]
         ],
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "48028d0482df7d4540077180a13b1cbcbd0fdbd076f7fb26ceba7a00c76fe538"
+        "version": "c907f3e4abcd10b495fbe341f52e4d57d81f63037bc5ae65f0e877a73ff38758"
     },
     "solver.SmoothingTime.time_smoothing": {
-        "code": "class SmoothingTime:\n    def time_smoothing(self, ldir):\n        solver.smoothing(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0,\n                nu=2,\n                ldir=ldir)\n\n    def setup(self, ldir):\n        self.grid, self.model, self.sfield = get_model(case='big')",
+        "code": "class SmoothingTime:\n    def time_smoothing(self, ldir, size):\n        solver.smoothing(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0,\n                nu=2,\n                ldir=ldir)\n\n    def setup(self, ldir, size):\n        self.grid, self.model, self.sfield = get_model(size)",
         "min_run_count": 2,
         "name": "solver.SmoothingTime.time_smoothing",
         "number": 0,
         "param_names": [
-            "ldir"
+            "ldir",
+            "size"
         ],
         "params": [
             [
@@ -58,6 +78,10 @@
                 "1",
                 "2",
                 "3"
+            ],
+            [
+                "'small'",
+                "'big'"
             ]
         ],
         "processes": 2,
@@ -66,11 +90,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "961aca7b1d8fd15b411dcc49472698b300e4b2e312b0a85772e2cf6914fef775",
+        "version": "a03b4efa772093d39a6d41c7e4f96ebd302644ea2fbab6be916f12cc485c0f0c",
         "warmup_time": -1
     },
     "solver.SolverMemory.peakmem_solver": {
-        "code": "class SolverMemory:\n    def peakmem_solver(self, sslsolver, anisotropy):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, sslsolver, anisotropy):\n        self.grid, self.model, self.sfield = get_model(anisotropy)",
+        "code": "class SolverMemory:\n    def peakmem_solver(self, sslsolver, anisotropy):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, sslsolver, anisotropy):\n        self.grid, self.model, self.sfield = get_model('small', anisotropy)",
         "name": "solver.SolverMemory.peakmem_solver",
         "param_names": [
             "sslsolver",
@@ -90,10 +114,10 @@
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "303854593e78d23d67e0067398f2d62c13a0668549a5b15056c327ebd8c7c5de"
+        "version": "74fdf43a3648f62eeb630e8c4c3d84f7868c8b5de5121660a66ce322018beb3d"
     },
     "solver.SolverTimeCycle.time_solver": {
-        "code": "class SolverTimeCycle:\n    def time_solver(self, cycle):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle=cycle,\n                sslsolver=False,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, cycle):\n        self.grid, self.model, self.sfield = get_model()",
+        "code": "class SolverTimeCycle:\n    def time_solver(self, cycle):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle=cycle,\n                sslsolver=False,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, cycle):\n        self.grid, self.model, self.sfield = get_model('small')",
         "min_run_count": 2,
         "name": "solver.SolverTimeCycle.time_solver",
         "number": 0,
@@ -113,11 +137,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "d868a8758b04fb33cf43a14f365ff3b2b8eae79ea4a3c859f4ecd6548ae1c5e5",
+        "version": "a4e7bd69b772ccb09b72c5a600b351e560079ee36c0167cddd8e23a0f0d6836a",
         "warmup_time": -1
     },
     "solver.SolverTimeMG.time_solver": {
-        "code": "class SolverTimeMG:\n    def time_solver(self, semicoarsening, linerelaxation):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=False,\n                semicoarsening=semicoarsening,\n                linerelaxation=linerelaxation,\n                verb=VERB)\n\n    def setup(self, semicoarsening, linerelaxation):\n        self.grid, self.model, self.sfield = get_model()",
+        "code": "class SolverTimeMG:\n    def time_solver(self, semicoarsening, linerelaxation):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=False,\n                semicoarsening=semicoarsening,\n                linerelaxation=linerelaxation,\n                verb=VERB)\n\n    def setup(self, semicoarsening, linerelaxation):\n        self.grid, self.model, self.sfield = get_model('small')",
         "min_run_count": 2,
         "name": "solver.SolverTimeMG.time_solver",
         "number": 0,
@@ -141,11 +165,11 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "b2ca196c1f131b3c44af22b9407648f9bbb3fa533f2c375c331e404aa86c019c",
+        "version": "06abe37973c976126ab365deb92dcfb0e9bf8b20d3ee1e391b5e93446f0cb01e",
         "warmup_time": -1
     },
     "solver.SolverTimeSSL.time_solver": {
-        "code": "class SolverTimeSSL:\n    def time_solver(self, sslsolver):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, sslsolver):\n        self.grid, self.model, self.sfield = get_model()",
+        "code": "class SolverTimeSSL:\n    def time_solver(self, sslsolver):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, sslsolver):\n        self.grid, self.model, self.sfield = get_model('small')",
         "min_run_count": 2,
         "name": "solver.SolverTimeSSL.time_solver",
         "number": 0,
@@ -164,7 +188,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "d17e52b860150d79a48b716456f34e81e968e39e2436caddeb2a2f7739df6be9",
+        "version": "79dac8b98ddf321a448c48562641a2f07c652de91f31cab9f067ebae6784f5e6",
         "warmup_time": -1
     },
     "version": 2
