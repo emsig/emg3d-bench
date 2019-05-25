@@ -1,9 +1,11 @@
 {
     "benchmark_version": {
+        "solver.ResidualMemory.peakmem_residual": "d6d1047280c2594ce892e36711aa095756f078d5f48d24e46529b1c584212096",
         "solver.ResidualMemory.peakmem_smoothing": "eae9dd179edd7f44d63f6e86f327c5d76e21bba96edacaf5a28ce5e9055a8c42",
+        "solver.ResidualTime.time_residual": "7a8712d0b968ed0f68576d29b75b6f1af5ff5e9398c54bcb8c121647a4ef8be6",
         "solver.ResidualTime.time_smoothing": "0f442041c850176881c31a3df053ae03c732b2a410c43ef5b85c985662dfd303",
-        "solver.SmoothingMemory.peakmem_smoothing": "c907f3e4abcd10b495fbe341f52e4d57d81f63037bc5ae65f0e877a73ff38758",
-        "solver.SmoothingTime.time_smoothing": "a03b4efa772093d39a6d41c7e4f96ebd302644ea2fbab6be916f12cc485c0f0c",
+        "solver.SmoothingMemory.peakmem_smoothing": "605b74ff8f943eea68219ec0dc3cc39672fc9891ec4b7de3fcd7941490d99ebc",
+        "solver.SmoothingTime.time_smoothing": "a80734a711960a5ca9369ffd2732c3e3a730fb5b19e6849c6de68e79c744bc6f",
         "solver.SolverMemory.peakmem_solver": "74fdf43a3648f62eeb630e8c4c3d84f7868c8b5de5121660a66ce322018beb3d",
         "solver.SolverTimeCycle.time_solver": "a4e7bd69b772ccb09b72c5a600b351e560079ee36c0167cddd8e23a0f0d6836a",
         "solver.SolverTimeMG.time_solver": "06abe37973c976126ab365deb92dcfb0e9bf8b20d3ee1e391b5e93446f0cb01e",
@@ -12,10 +14,12 @@
     "commit_hash": "13b4888926d261d7050d20d6ae1b2562282e38d4",
     "date": 1558618968000,
     "ended_at": {
+        "solver.ResidualMemory.peakmem_residual": 1558800013670,
         "solver.ResidualMemory.peakmem_smoothing": 1558628953183,
+        "solver.ResidualTime.time_residual": 1558800014528,
         "solver.ResidualTime.time_smoothing": 1558628954000,
-        "solver.SmoothingMemory.peakmem_smoothing": 1558639531136,
-        "solver.SmoothingTime.time_smoothing": 1558639530460,
+        "solver.SmoothingMemory.peakmem_smoothing": 1558800018610,
+        "solver.SmoothingTime.time_smoothing": 1558800040734,
         "solver.SolverMemory.peakmem_solver": 1558628973260,
         "solver.SolverTimeCycle.time_solver": 1558629010183,
         "solver.SolverTimeMG.time_solver": 1558629075330,
@@ -26,14 +30,26 @@
         "arch": "x86_64",
         "cpu": "Intel(R) Core(TM) i7-6600U CPU @ 2.60GHz",
         "machine": "dtr-latitude",
-        "os": "Linux 4.15.0-47-generic",
+        "os": "Linux 4.18.0-20-generic",
         "python": "3.7",
-        "ram": "16069588"
+        "ram": "16307368"
     },
     "profiles": {},
     "python": "3.7",
     "requirements": {},
     "results": {
+        "solver.ResidualMemory.peakmem_residual": {
+            "params": [
+                [
+                    "'small'",
+                    "'big'"
+                ]
+            ],
+            "result": [
+                98738176,
+                232185856
+            ]
+        },
         "solver.ResidualMemory.peakmem_smoothing": {
             "params": [
                 [
@@ -44,6 +60,48 @@
             "result": [
                 73986048,
                 184713216
+            ]
+        },
+        "solver.ResidualTime.time_residual": {
+            "params": [
+                [
+                    "'small'",
+                    "'big'"
+                ]
+            ],
+            "result": [
+                0.0030023075000000024,
+                0.04895194350000004
+            ],
+            "stats": [
+                {
+                    "ci_99": [
+                        0.002963436250000003,
+                        0.003146687250000002
+                    ],
+                    "max": 0.003146687250000002,
+                    "mean": 0.003033493125000001,
+                    "min": 0.002963436250000003,
+                    "number": 4,
+                    "q_25": 0.0029843751875000026,
+                    "q_75": 0.0030678621874999992,
+                    "repeat": 10,
+                    "std": 6.409976144975648e-05
+                },
+                {
+                    "ci_99": [
+                        0.04590201000000005,
+                        0.05052354800000003
+                    ],
+                    "max": 0.05052354800000003,
+                    "mean": 0.04813589580000002,
+                    "min": 0.04590201000000005,
+                    "number": 1,
+                    "q_25": 0.04608344525000001,
+                    "q_75": 0.04921180075000001,
+                    "repeat": 10,
+                    "std": 0.0017935501006328058
+                }
             ]
         },
         "solver.ResidualTime.time_smoothing": {
@@ -101,7 +159,16 @@
                     "'big'"
                 ]
             ],
-            "result": null
+            "result": [
+                105865216,
+                221405184,
+                105922560,
+                221544448,
+                105926656,
+                221548544,
+                105926656,
+                221573120
+            ]
         },
         "solver.SmoothingTime.time_smoothing": {
             "params": [
@@ -116,7 +183,130 @@
                     "'big'"
                 ]
             ],
-            "result": null
+            "result": [
+                0.048184746500000014,
+                0.5922680590000001,
+                0.056868435499999995,
+                0.735822615,
+                0.05859061600000012,
+                0.9420868485,
+                0.0589733325,
+                0.827080059
+            ],
+            "stats": [
+                {
+                    "ci_99": [
+                        0.04627381900000005,
+                        0.05453291800000004
+                    ],
+                    "max": 0.05453291800000004,
+                    "mean": 0.04843972590000001,
+                    "min": 0.04627381900000005,
+                    "number": 1,
+                    "q_25": 0.046979987499999876,
+                    "q_75": 0.048756250999999994,
+                    "repeat": 10,
+                    "std": 0.002260676286136334
+                },
+                {
+                    "ci_99": [
+                        0.588978955,
+                        0.5953411
+                    ],
+                    "max": 0.5953411,
+                    "mean": 0.5923263958,
+                    "min": 0.588978955,
+                    "number": 1,
+                    "q_25": 0.5910337039999999,
+                    "q_75": 0.5940138929999998,
+                    "repeat": 10,
+                    "std": 0.001972651115449135
+                },
+                {
+                    "ci_99": [
+                        0.05666840999999989,
+                        0.06465093800000021
+                    ],
+                    "max": 0.06465093800000021,
+                    "mean": 0.05760500540000002,
+                    "min": 0.05666840999999989,
+                    "number": 1,
+                    "q_25": 0.05670933475000006,
+                    "q_75": 0.056952619749999996,
+                    "repeat": 10,
+                    "std": 0.0023511998538778313
+                },
+                {
+                    "ci_99": [
+                        0.733900819,
+                        0.7371002520000001
+                    ],
+                    "max": 0.7371002520000001,
+                    "mean": 0.7356342448000001,
+                    "min": 0.733900819,
+                    "number": 1,
+                    "q_25": 0.7351154587500003,
+                    "q_75": 0.7361058732499998,
+                    "repeat": 10,
+                    "std": 0.0008690741442563476
+                },
+                {
+                    "ci_99": [
+                        0.058493100999999825,
+                        0.06733215700000006
+                    ],
+                    "max": 0.06733215700000006,
+                    "mean": 0.05961434630000002,
+                    "min": 0.058493100999999825,
+                    "number": 1,
+                    "q_25": 0.05855375150000007,
+                    "q_75": 0.05877515674999998,
+                    "repeat": 10,
+                    "std": 0.002610361014731615
+                },
+                {
+                    "ci_99": [
+                        0.9381916969999997,
+                        0.957958265
+                    ],
+                    "max": 0.957958265,
+                    "mean": 0.9436631242000001,
+                    "min": 0.9381916969999997,
+                    "number": 1,
+                    "q_25": 0.9412611304999998,
+                    "q_75": 0.9436543407500002,
+                    "repeat": 10,
+                    "std": 0.005160310637268314
+                },
+                {
+                    "ci_99": [
+                        0.05861695000000022,
+                        0.06673437800000004
+                    ],
+                    "max": 0.06673437800000004,
+                    "mean": 0.05977008150000007,
+                    "min": 0.05861695000000022,
+                    "number": 1,
+                    "q_25": 0.05872956500000029,
+                    "q_75": 0.05908613449999999,
+                    "repeat": 10,
+                    "std": 0.0023537233259426516
+                },
+                {
+                    "ci_99": [
+                        0.8172042849999999,
+                        0.8399070860000001
+                    ],
+                    "max": 0.8399070860000001,
+                    "mean": 0.8271120784000001,
+                    "min": 0.8172042849999999,
+                    "number": 1,
+                    "q_25": 0.8251979907499999,
+                    "q_75": 0.82915111925,
+                    "repeat": 10,
+                    "std": 0.005720009591011853
+                }
+            ]
         },
         "solver.SolverMemory.peakmem_solver": {
             "params": [
@@ -317,10 +507,12 @@
         }
     },
     "started_at": {
+        "solver.ResidualMemory.peakmem_residual": 1558800013463,
         "solver.ResidualMemory.peakmem_smoothing": 1558628952927,
+        "solver.ResidualTime.time_residual": 1558800013671,
         "solver.ResidualTime.time_smoothing": 1558628953191,
-        "solver.SmoothingMemory.peakmem_smoothing": 1558639530460,
-        "solver.SmoothingTime.time_smoothing": 1558639529627,
+        "solver.SmoothingMemory.peakmem_smoothing": 1558800014529,
+        "solver.SmoothingTime.time_smoothing": 1558800018611,
         "solver.SolverMemory.peakmem_solver": 1558628954757,
         "solver.SolverTimeCycle.time_solver": 1558628973267,
         "solver.SolverTimeMG.time_solver": 1558629010188,

@@ -1,7 +1,7 @@
 {
-    "solver.ResidualMemory.peakmem_smoothing": {
-        "code": "class ResidualMemory:\n    def peakmem_smoothing(self, size):\n        solver.residual(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0)\n\n    def setup(self, size):\n        self.grid, self.model, self.sfield = get_model(size)",
-        "name": "solver.ResidualMemory.peakmem_smoothing",
+    "solver.ResidualMemory.peakmem_residual": {
+        "code": "class ResidualMemory:\n    def peakmem_residual(self, size):\n        if BEFORE:\n            res = solver.residual(\n                    self.grid, self.model, self.sfield, self.sfield.field*0)\n            norm = np.linalg.norm(res)\n        else:  # After, norm is included in residual.\n            res, norm = solver.residual(\n                    self.grid, self.model, self.sfield, self.sfield.field*0)\n\n    def setup(self, size):\n        self.grid, self.model, self.sfield = get_model(size)",
+        "name": "solver.ResidualMemory.peakmem_residual",
         "param_names": [
             "size"
         ],
@@ -14,12 +14,12 @@
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "eae9dd179edd7f44d63f6e86f327c5d76e21bba96edacaf5a28ce5e9055a8c42"
+        "version": "d6d1047280c2594ce892e36711aa095756f078d5f48d24e46529b1c584212096"
     },
-    "solver.ResidualTime.time_smoothing": {
-        "code": "class ResidualTime:\n    def time_smoothing(self, size):\n        solver.residual(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0)\n\n    def setup(self, size):\n        self.grid, self.model, self.sfield = get_model(size)",
+    "solver.ResidualTime.time_residual": {
+        "code": "class ResidualTime:\n    def time_residual(self, size):\n        if BEFORE:\n            res = solver.residual(\n                    self.grid, self.model, self.sfield, self.sfield.field*0)\n            norm = np.linalg.norm(res)\n        else:  # After, norm is included in residual.\n            res, norm = solver.residual(\n                    self.grid, self.model, self.sfield, self.sfield.field*0)\n\n    def setup(self, size):\n        self.grid, self.model, self.sfield = get_model(size)",
         "min_run_count": 2,
-        "name": "solver.ResidualTime.time_smoothing",
+        "name": "solver.ResidualTime.time_residual",
         "number": 0,
         "param_names": [
             "size"
@@ -36,14 +36,14 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "0f442041c850176881c31a3df053ae03c732b2a410c43ef5b85c985662dfd303",
+        "version": "7a8712d0b968ed0f68576d29b75b6f1af5ff5e9398c54bcb8c121647a4ef8be6",
         "warmup_time": -1
     },
     "solver.SmoothingMemory.peakmem_smoothing": {
-        "code": "class SmoothingMemory:\n    def peakmem_smoothing(self, ldir, size):\n        solver.smoothing(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0,\n                nu=2,\n                ldir=ldir)\n\n    def setup(self, ldir, size):\n        self.grid, self.model, self.sfield = get_model(size)",
+        "code": "class SmoothingMemory:\n    def peakmem_smoothing(self, lr_dir, size):\n        efield = utils.Field(self.grid, self.sfield.field)\n        inp = (self.grid, self.model, self.sfield, efield, 2, lr_dir)\n        if BEFORE:\n            solver.smoothing(*inp)\n            res = solver.residual(self.grid, self.model, self.sfield, efield)\n            norm = np.linalg.norm(res)\n        else:  # After, residual is included in smoothing and norm in residual.\n            res, norm = solver.smoothing(*inp)\n\n    def setup(self, lr_dir, size):\n        self.grid, self.model, self.sfield = get_model(size)",
         "name": "solver.SmoothingMemory.peakmem_smoothing",
         "param_names": [
-            "ldir",
+            "lr_dir",
             "size"
         ],
         "params": [
@@ -61,15 +61,15 @@
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "c907f3e4abcd10b495fbe341f52e4d57d81f63037bc5ae65f0e877a73ff38758"
+        "version": "605b74ff8f943eea68219ec0dc3cc39672fc9891ec4b7de3fcd7941490d99ebc"
     },
     "solver.SmoothingTime.time_smoothing": {
-        "code": "class SmoothingTime:\n    def time_smoothing(self, ldir, size):\n        solver.smoothing(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                efield=self.sfield*0,\n                nu=2,\n                ldir=ldir)\n\n    def setup(self, ldir, size):\n        self.grid, self.model, self.sfield = get_model(size)",
+        "code": "class SmoothingTime:\n    def time_smoothing(self, lr_dir, size):\n        efield = utils.Field(self.grid, self.sfield.field)\n        inp = (self.grid, self.model, self.sfield, efield, 2, lr_dir)\n        if BEFORE:\n            solver.smoothing(*inp)\n            res = solver.residual(self.grid, self.model, self.sfield, efield)\n            norm = np.linalg.norm(res)\n        else:  # After, residual is included in smoothing and norm in residual.\n            res, norm = solver.smoothing(*inp)\n\n    def setup(self, lr_dir, size):\n        self.grid, self.model, self.sfield = get_model(size)",
         "min_run_count": 2,
         "name": "solver.SmoothingTime.time_smoothing",
         "number": 0,
         "param_names": [
-            "ldir",
+            "lr_dir",
             "size"
         ],
         "params": [
@@ -90,7 +90,7 @@
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "a03b4efa772093d39a6d41c7e4f96ebd302644ea2fbab6be916f12cc485c0f0c",
+        "version": "a80734a711960a5ca9369ffd2732c3e3a730fb5b19e6849c6de68e79c744bc6f",
         "warmup_time": -1
     },
     "solver.SolverMemory.peakmem_solver": {
