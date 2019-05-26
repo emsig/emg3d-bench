@@ -16,18 +16,18 @@
     "commit_hash": "72f12ab0b2439b610de52c3b4de7c8ce6200fa6a",
     "date": 1555486509000,
     "ended_at": {
-        "solver.ResidualMemory.peakmem_residual": 1558802612604,
+        "solver.ResidualMemory.peakmem_residual": 1558880595164,
         "solver.ResidualMemory.peakmem_smoothing": 1558639531713,
-        "solver.ResidualTime.time_residual": 1558802612604,
+        "solver.ResidualTime.time_residual": 1558880595163,
         "solver.ResidualTime.time_smoothing": 1558639531712,
-        "solver.SmoothingMemory.peakmem_smoothing": 1558802612604,
-        "solver.SmoothingTime.time_smoothing": 1558802612604,
+        "solver.SmoothingMemory.peakmem_smoothing": 1558880595161,
+        "solver.SmoothingTime.time_smoothing": 1558880595160,
         "solver.Solver.peakmem_solver": 1556913001102,
         "solver.Solver.time_solver": 1556913001103,
-        "solver.SolverMemory.peakmem_solver": 1558802612603,
-        "solver.SolverTimeCycle.time_solver": 1558802612604,
-        "solver.SolverTimeMG.time_solver": 1558802612603,
-        "solver.SolverTimeSSL.time_solver": 1558802612603
+        "solver.SolverMemory.peakmem_solver": 1558880595156,
+        "solver.SolverTimeCycle.time_solver": 1558880595159,
+        "solver.SolverTimeMG.time_solver": 1558880595158,
+        "solver.SolverTimeSSL.time_solver": 1558880595157
     },
     "env_name": "conda-py3.7",
     "params": {
@@ -192,18 +192,18 @@
         }
     },
     "started_at": {
-        "solver.ResidualMemory.peakmem_residual": 1558802612604,
+        "solver.ResidualMemory.peakmem_residual": 1558880595164,
         "solver.ResidualMemory.peakmem_smoothing": 1558639531713,
-        "solver.ResidualTime.time_residual": 1558802612604,
+        "solver.ResidualTime.time_residual": 1558880595163,
         "solver.ResidualTime.time_smoothing": 1558639531712,
-        "solver.SmoothingMemory.peakmem_smoothing": 1558802612604,
-        "solver.SmoothingTime.time_smoothing": 1558802612604,
+        "solver.SmoothingMemory.peakmem_smoothing": 1558880595161,
+        "solver.SmoothingTime.time_smoothing": 1558880595160,
         "solver.Solver.peakmem_solver": 1556913001102,
         "solver.Solver.time_solver": 1556913001103,
-        "solver.SolverMemory.peakmem_solver": 1558802612603,
-        "solver.SolverTimeCycle.time_solver": 1558802612604,
-        "solver.SolverTimeMG.time_solver": 1558802612603,
-        "solver.SolverTimeSSL.time_solver": 1558802612603
+        "solver.SolverMemory.peakmem_solver": 1558880595156,
+        "solver.SolverTimeCycle.time_solver": 1558880595159,
+        "solver.SolverTimeMG.time_solver": 1558880595158,
+        "solver.SolverTimeSSL.time_solver": 1558880595157
     },
     "version": 1
 }
