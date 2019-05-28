@@ -1,7 +1,7 @@
 {
-    "solver.ResidualMemory.peakmem_residual": {
-        "code": "class ResidualMemory:\n    def peakmem_residual(self, size):\n        if BEFORE:\n            res = solver.residual(\n                    self.grid, self.model, self.sfield, self.sfield.field*0)\n            norm = np.linalg.norm(res)\n        else:  # After, norm is included in residual.\n            res, norm = solver.residual(\n                    self.grid, self.model, self.sfield, self.sfield.field*0)\n\n    def setup(self, size):\n        self.grid, self.model, self.sfield = get_model(size)",
-        "name": "solver.ResidualMemory.peakmem_residual",
+    "memory.ResidualMemory.peakmem_residual": {
+        "code": "class ResidualMemory:\n    def peakmem_residual(self, data, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        if BEFORE:\n            res = solver.residual(grid, model, sfield, sfield.field*0)\n            norm = np.linalg.norm(res)\n        else:  # After, norm is included in residual.\n            res, norm = solver.residual(grid, model, sfield, sfield.field*0)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[0]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['model'] = model\n            data[size]['sfield'] = sfield\n        return data",
+        "name": "memory.ResidualMemory.peakmem_residual",
         "param_names": [
             "size"
         ],
@@ -11,37 +11,15 @@
                 "'big'"
             ]
         ],
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:135",
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "d6d1047280c2594ce892e36711aa095756f078d5f48d24e46529b1c584212096"
+        "version": "b693cc6d404bd417bf27fd2b73cb5468ce2f311a90e9dfaa43d0b92157802431"
     },
-    "solver.ResidualTime.time_residual": {
-        "code": "class ResidualTime:\n    def time_residual(self, size):\n        if BEFORE:\n            res = solver.residual(\n                    self.grid, self.model, self.sfield, self.sfield.field*0)\n            norm = np.linalg.norm(res)\n        else:  # After, norm is included in residual.\n            res, norm = solver.residual(\n                    self.grid, self.model, self.sfield, self.sfield.field*0)\n\n    def setup(self, size):\n        self.grid, self.model, self.sfield = get_model(size)",
-        "min_run_count": 2,
-        "name": "solver.ResidualTime.time_residual",
-        "number": 0,
-        "param_names": [
-            "size"
-        ],
-        "params": [
-            [
-                "'small'",
-                "'big'"
-            ]
-        ],
-        "processes": 2,
-        "repeat": 0,
-        "sample_time": 0.01,
-        "timeout": 60.0,
-        "type": "time",
-        "unit": "seconds",
-        "version": "7a8712d0b968ed0f68576d29b75b6f1af5ff5e9398c54bcb8c121647a4ef8be6",
-        "warmup_time": -1
-    },
-    "solver.SmoothingMemory.peakmem_smoothing": {
-        "code": "class SmoothingMemory:\n    def peakmem_smoothing(self, lr_dir, size):\n        efield = utils.Field(self.grid, self.sfield.field)\n        inp = (self.grid, self.model, self.sfield, efield, 2, lr_dir)\n        if BEFORE:\n            solver.smoothing(*inp)\n            res = solver.residual(self.grid, self.model, self.sfield, efield)\n            norm = np.linalg.norm(res)\n        else:  # After, residual is included in smoothing and norm in residual.\n            res, norm = solver.smoothing(*inp)\n\n    def setup(self, lr_dir, size):\n        self.grid, self.model, self.sfield = get_model(size)",
-        "name": "solver.SmoothingMemory.peakmem_smoothing",
+    "memory.SmoothingMemory.peakmem_smoothing": {
+        "code": "class SmoothingMemory:\n    def peakmem_smoothing(self, data, lr_dir, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        efield = utils.Field(grid)\n        inp = (grid, model, sfield, efield, 2, lr_dir)\n        if BEFORE:\n            solver.smoothing(*inp)\n            res = solver.residual(grid, model, sfield, efield)\n            norm = np.linalg.norm(res)\n        else:  # After, residual is included in smoothing and norm in residual.\n            res, norm = solver.smoothing(*inp)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[1]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['model'] = model\n            data[size]['sfield'] = sfield\n        return data",
+        "name": "memory.SmoothingMemory.peakmem_smoothing",
         "param_names": [
             "lr_dir",
             "size"
@@ -58,44 +36,15 @@
                 "'big'"
             ]
         ],
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:106",
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "605b74ff8f943eea68219ec0dc3cc39672fc9891ec4b7de3fcd7941490d99ebc"
+        "version": "a7546b6d4726bbaec3065b1dc73fbb9592f470ba8bef377a251167e3293ccfb2"
     },
-    "solver.SmoothingTime.time_smoothing": {
-        "code": "class SmoothingTime:\n    def time_smoothing(self, lr_dir, size):\n        efield = utils.Field(self.grid, self.sfield.field)\n        inp = (self.grid, self.model, self.sfield, efield, 2, lr_dir)\n        if BEFORE:\n            solver.smoothing(*inp)\n            res = solver.residual(self.grid, self.model, self.sfield, efield)\n            norm = np.linalg.norm(res)\n        else:  # After, residual is included in smoothing and norm in residual.\n            res, norm = solver.smoothing(*inp)\n\n    def setup(self, lr_dir, size):\n        self.grid, self.model, self.sfield = get_model(size)",
-        "min_run_count": 2,
-        "name": "solver.SmoothingTime.time_smoothing",
-        "number": 0,
-        "param_names": [
-            "lr_dir",
-            "size"
-        ],
-        "params": [
-            [
-                "0",
-                "1",
-                "2",
-                "3"
-            ],
-            [
-                "'small'",
-                "'big'"
-            ]
-        ],
-        "processes": 2,
-        "repeat": 0,
-        "sample_time": 0.01,
-        "timeout": 60.0,
-        "type": "time",
-        "unit": "seconds",
-        "version": "a80734a711960a5ca9369ffd2732c3e3a730fb5b19e6849c6de68e79c744bc6f",
-        "warmup_time": -1
-    },
-    "solver.SolverMemory.peakmem_solver": {
-        "code": "class SolverMemory:\n    def peakmem_solver(self, sslsolver, anisotropy):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, sslsolver, anisotropy):\n        self.grid, self.model, self.sfield = get_model('small', anisotropy)",
-        "name": "solver.SolverMemory.peakmem_solver",
+    "memory.SolverMemory.peakmem_solver": {
+        "code": "class SolverMemory:\n    def peakmem_solver(self, data, sslsolver, anisotropy):\n        grid = data[anisotropy]['grid']\n        model = data[anisotropy]['model']\n        sfield = utils.Field(grid, data[anisotropy]['sfield'])\n        solver.solver(\n                grid=grid,\n                model=model,\n                sfield=sfield,\n                cycle='F',\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup_cache(self):\n        data = {}\n        for anisotropy in self.params[1]:\n            data[anisotropy] = {}\n            grid, model, sfield = get_model('small', anisotropy)\n            data[anisotropy]['grid'] = grid\n            data[anisotropy]['model'] = model\n            data[anisotropy]['sfield'] = sfield\n        return data",
+        "name": "memory.SolverMemory.peakmem_solver",
         "param_names": [
             "sslsolver",
             "anisotropy"
@@ -111,15 +60,71 @@
                 "'tri'"
             ]
         ],
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:71",
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "74fdf43a3648f62eeb630e8c4c3d84f7868c8b5de5121660a66ce322018beb3d"
+        "version": "d8f255b3bceb0a8a71ea40f041c9a25e3b44b5fef30e25ffda555d2bcfe0b168"
     },
-    "solver.SolverTimeCycle.time_solver": {
-        "code": "class SolverTimeCycle:\n    def time_solver(self, cycle):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle=cycle,\n                sslsolver=False,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, cycle):\n        self.grid, self.model, self.sfield = get_model('small')",
+    "time.ResidualTime.time_residual": {
+        "code": "class ResidualTime:\n    def time_residual(self, data, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        if BEFORE:\n            res = solver.residual(grid, model, sfield, sfield.field*0)\n            norm = np.linalg.norm(res)\n        else:  # After, norm is included in residual.\n            res, norm = solver.residual(grid, model, sfield, sfield.field*0)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[0]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['model'] = model\n            data[size]['sfield'] = sfield\n        return data",
         "min_run_count": 2,
-        "name": "solver.SolverTimeCycle.time_solver",
+        "name": "time.ResidualTime.time_residual",
+        "number": 0,
+        "param_names": [
+            "size"
+        ],
+        "params": [
+            [
+                "'small'",
+                "'big'"
+            ]
+        ],
+        "processes": 2,
+        "repeat": 0,
+        "sample_time": 0.01,
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:199",
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "0d6b6a0bdc443480b9445059a4bc02c67173385fe1e5eb79aab321bdc411c6a4",
+        "warmup_time": -1
+    },
+    "time.SmoothingTime.time_smoothing": {
+        "code": "class SmoothingTime:\n    def time_smoothing(self, data, lr_dir, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        efield = utils.Field(grid)\n        inp = (grid, model, sfield, efield, 2, lr_dir)\n        if BEFORE:\n            solver.smoothing(*inp)\n            res = solver.residual(grid, model, sfield, efield)\n            norm = np.linalg.norm(res)\n        else:  # After, residual is included in smoothing and norm in residual.\n            res, norm = solver.smoothing(*inp)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[1]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['model'] = model\n            data[size]['sfield'] = sfield\n        return data",
+        "min_run_count": 2,
+        "name": "time.SmoothingTime.time_smoothing",
+        "number": 0,
+        "param_names": [
+            "lr_dir",
+            "size"
+        ],
+        "params": [
+            [
+                "0",
+                "1",
+                "2",
+                "3"
+            ],
+            [
+                "'small'",
+                "'big'"
+            ]
+        ],
+        "processes": 2,
+        "repeat": 0,
+        "sample_time": 0.01,
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:170",
+        "timeout": 60.0,
+        "type": "time",
+        "unit": "seconds",
+        "version": "e96bf957142df5948f4eb671211b1682e45c858580ef958c3886c181cc745607",
+        "warmup_time": -1
+    },
+    "time.SolverTimeCycle.time_solver": {
+        "code": "class SolverTimeCycle:\n    def time_solver(self, data, cycle):\n        grid = data['grid']\n        model = data['model']\n        sfield = utils.Field(grid, data['sfield'])\n        solver.solver(\n                grid=grid,\n                model=model,\n                sfield=sfield,\n                cycle=cycle,\n                sslsolver=False,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup_cache(self):\n        data = {}\n        grid, model, sfield = get_model('small')\n        data['grid'] = grid\n        data['model'] = model\n        data['sfield'] = sfield\n        return data",
+        "min_run_count": 2,
+        "name": "time.SolverTimeCycle.time_solver",
         "number": 0,
         "param_names": [
             "cycle"
@@ -134,16 +139,17 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:137",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "a4e7bd69b772ccb09b72c5a600b351e560079ee36c0167cddd8e23a0f0d6836a",
+        "version": "a9c880bbe599d4f94697fcbfff6f3193b4da1ab3b2d05f3d4e5feae61ddce2b6",
         "warmup_time": -1
     },
-    "solver.SolverTimeMG.time_solver": {
-        "code": "class SolverTimeMG:\n    def time_solver(self, semicoarsening, linerelaxation):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=False,\n                semicoarsening=semicoarsening,\n                linerelaxation=linerelaxation,\n                verb=VERB)\n\n    def setup(self, semicoarsening, linerelaxation):\n        self.grid, self.model, self.sfield = get_model('small')",
+    "time.SolverTimeMG.time_solver": {
+        "code": "class SolverTimeMG:\n    def time_solver(self, data, semicoarsening, linerelaxation):\n        grid = data['grid']\n        model = data['model']\n        sfield = utils.Field(grid, data['sfield'])\n        solver.solver(\n                grid=grid,\n                model=model,\n                sfield=sfield,\n                cycle='F',\n                sslsolver=False,\n                semicoarsening=semicoarsening,\n                linerelaxation=linerelaxation,\n                verb=VERB)\n\n    def setup_cache(self):\n        data = {}\n        grid, model, sfield = get_model('small')\n        data['grid'] = grid\n        data['model'] = model\n        data['sfield'] = sfield\n        return data",
         "min_run_count": 2,
-        "name": "solver.SolverTimeMG.time_solver",
+        "name": "time.SolverTimeMG.time_solver",
         "number": 0,
         "param_names": [
             "semicoarsening",
@@ -162,16 +168,17 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:104",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "06abe37973c976126ab365deb92dcfb0e9bf8b20d3ee1e391b5e93446f0cb01e",
+        "version": "0f36c1d6ae03b1a44a40b23d61d7ffa5b7cc54bfd64eeb5494c9ac375bae3f7f",
         "warmup_time": -1
     },
-    "solver.SolverTimeSSL.time_solver": {
-        "code": "class SolverTimeSSL:\n    def time_solver(self, sslsolver):\n        solver.solver(\n                grid=self.grid,\n                model=self.model,\n                sfield=self.sfield,\n                cycle='F',\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup(self, sslsolver):\n        self.grid, self.model, self.sfield = get_model('small')",
+    "time.SolverTimeSSL.time_solver": {
+        "code": "class SolverTimeSSL:\n    def time_solver(self, data, sslsolver):\n        grid = data['grid']\n        model = data['model']\n        sfield = utils.Field(grid, data['sfield'])\n        solver.solver(\n                grid=grid,\n                model=model,\n                sfield=sfield,\n                cycle='F',\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup_cache(self):\n        data = {}\n        grid, model, sfield = get_model('small')\n        data['grid'] = grid\n        data['model'] = model\n        data['sfield'] = sfield\n        return data",
         "min_run_count": 2,
-        "name": "solver.SolverTimeSSL.time_solver",
+        "name": "time.SolverTimeSSL.time_solver",
         "number": 0,
         "param_names": [
             "sslsolver"
@@ -185,10 +192,11 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:70",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "79dac8b98ddf321a448c48562641a2f07c652de91f31cab9f067ebae6784f5e6",
+        "version": "5b933ce2c5eb9765f95b73591ccf0b52134c557d57ae85a68101f067ee34deae",
         "warmup_time": -1
     },
     "version": 2
