@@ -1,6 +1,6 @@
 {
     "memory.ResidualMemory.peakmem_residual": {
-        "code": "class ResidualMemory:\n    def peakmem_residual(self, data, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        if BEFORE:\n            res = solver.residual(grid, model, sfield, sfield.field*0)\n            norm = np.linalg.norm(res)\n        else:  # After, norm is included in residual.\n            res, norm = solver.residual(grid, model, sfield, sfield.field*0)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[0]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['model'] = model\n            data[size]['sfield'] = sfield\n        return data",
+        "code": "class ResidualMemory:\n    def peakmem_residual(self, data, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        if BEFORE:\n            res = solver.residual(grid, model, sfield, sfield.field*0)\n            norm = np.linalg.norm(res)\n        else:  # After, norm is included in residual.\n            res, norm = solver.residual(grid, model, sfield, sfield.field*0)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[0]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            try:  # Needs VolumeModel from d8e98c0 onwards.\n                data[size]['model'] = utils.VolumeModel(grid, model, sfield)\n            except AttributeError:\n                data[size]['model'] = model\n        return data",
         "name": "memory.ResidualMemory.peakmem_residual",
         "param_names": [
             "size"
@@ -11,14 +11,14 @@
                 "'big'"
             ]
         ],
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:146",
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:153",
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "b693cc6d404bd417bf27fd2b73cb5468ce2f311a90e9dfaa43d0b92157802431"
+        "version": "e2274e14e498509f7245331c493f458523362edf067130589d46cb830a5c3d49"
     },
     "memory.SmoothingMemory.peakmem_smoothing": {
-        "code": "class SmoothingMemory:\n    def peakmem_smoothing(self, data, lr_dir, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        efield = utils.Field(grid)\n        inp = (grid, model, sfield, efield, 2, lr_dir)\n        if BEFORE:\n            solver.smoothing(*inp)\n            res = solver.residual(grid, model, sfield, efield)\n            norm = np.linalg.norm(res)\n        else:  # After, residual is included in smoothing and norm in residual.\n            res, norm = solver.smoothing(*inp)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[1]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['model'] = model\n            data[size]['sfield'] = sfield\n        return data",
+        "code": "class SmoothingMemory:\n    def peakmem_smoothing(self, data, lr_dir, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        efield = utils.Field(grid)\n        inp = (grid, model, sfield, efield, 2, lr_dir)\n        if BEFORE:\n            solver.smoothing(*inp)\n            res = solver.residual(grid, model, sfield, efield)\n            norm = np.linalg.norm(res)\n        else:  # After, residual is included in smoothing and norm in residual.\n            res, norm = solver.smoothing(*inp)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[1]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            try:  # Needs VolumeModel from d8e98c0 onwards.\n                data[size]['model'] = utils.VolumeModel(grid, model, sfield)\n            except AttributeError:\n                data[size]['model'] = model\n        return data",
         "name": "memory.SmoothingMemory.peakmem_smoothing",
         "param_names": [
             "lr_dir",
@@ -36,11 +36,11 @@
                 "'big'"
             ]
         ],
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:117",
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:121",
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "a7546b6d4726bbaec3065b1dc73fbb9592f470ba8bef377a251167e3293ccfb2"
+        "version": "fec2b6f9600f4af7771e124cab8402d346d9a10eac570833524186b64bd9df4a"
     },
     "memory.SolverMemory.peakmem_solver": {
         "code": "class SolverMemory:\n    def peakmem_solver(self, data, sslsolver, anisotropy):\n        grid = data[anisotropy]['grid']\n        model = data[anisotropy]['model']\n        sfield = utils.Field(grid, data[anisotropy]['sfield'])\n        solver.solver(\n                grid=grid,\n                model=model,\n                sfield=sfield,\n                cycle='F',\n                sslsolver=sslsolver,\n                semicoarsening=True,\n                linerelaxation=True,\n                verb=VERB)\n\n    def setup_cache(self):\n        data = {}\n        for anisotropy in self.params[1]:\n            data[anisotropy] = {}\n            grid, model, sfield = get_model('small', anisotropy)\n            data[anisotropy]['grid'] = grid\n            data[anisotropy]['model'] = model\n            data[anisotropy]['sfield'] = sfield\n        return data",
@@ -60,14 +60,14 @@
                 "'tri'"
             ]
         ],
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:82",
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:86",
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
         "version": "d8f255b3bceb0a8a71ea40f041c9a25e3b44b5fef30e25ffda555d2bcfe0b168"
     },
     "time.ResidualTime.time_residual": {
-        "code": "class ResidualTime:\n    def time_residual(self, data, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        if BEFORE:\n            res = solver.residual(grid, model, sfield, sfield.field*0)\n            norm = np.linalg.norm(res)\n        else:  # After, norm is included in residual.\n            res, norm = solver.residual(grid, model, sfield, sfield.field*0)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[0]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['model'] = model\n            data[size]['sfield'] = sfield\n        return data",
+        "code": "class ResidualTime:\n    def time_residual(self, data, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        if BEFORE:\n            res = solver.residual(grid, model, sfield, sfield.field*0)\n            norm = np.linalg.norm(res)\n        else:  # After, norm is included in residual.\n            res, norm = solver.residual(grid, model, sfield, sfield.field*0)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[0]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            try:  # Needs VolumeModel from d8e98c0 onwards.\n                data[size]['model'] = utils.VolumeModel(grid, model, sfield)\n            except AttributeError:\n                data[size]['model'] = model\n    \n        return data",
         "min_run_count": 2,
         "name": "time.ResidualTime.time_residual",
         "number": 0,
@@ -83,15 +83,15 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:211",
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:218",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "0d6b6a0bdc443480b9445059a4bc02c67173385fe1e5eb79aab321bdc411c6a4",
+        "version": "ef8926db276cc98e56a985bdc4bf9eb11f6c535693591c49271574670e2113c5",
         "warmup_time": -1
     },
     "time.SmoothingTime.time_smoothing": {
-        "code": "class SmoothingTime:\n    def time_smoothing(self, data, lr_dir, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        efield = utils.Field(grid)\n        inp = (grid, model, sfield, efield, 2, lr_dir)\n        if BEFORE:\n            solver.smoothing(*inp)\n            res = solver.residual(grid, model, sfield, efield)\n            norm = np.linalg.norm(res)\n        else:  # After, residual is included in smoothing and norm in residual.\n            res, norm = solver.smoothing(*inp)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[1]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['model'] = model\n            data[size]['sfield'] = sfield\n        return data",
+        "code": "class SmoothingTime:\n    def time_smoothing(self, data, lr_dir, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = utils.Field(grid, data[size]['sfield'])\n        efield = utils.Field(grid)\n        inp = (grid, model, sfield, efield, 2, lr_dir)\n        if BEFORE:\n            solver.smoothing(*inp)\n            res = solver.residual(grid, model, sfield, efield)\n            norm = np.linalg.norm(res)\n        else:  # After, residual is included in smoothing and norm in residual.\n            res, norm = solver.smoothing(*inp)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[1]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            try:  # Needs VolumeModel from d8e98c0 onwards.\n                data[size]['model'] = utils.VolumeModel(grid, model, sfield)\n            except AttributeError:\n                data[size]['model'] = model\n        return data",
         "min_run_count": 2,
         "name": "time.SmoothingTime.time_smoothing",
         "number": 0,
@@ -114,11 +114,11 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:182",
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:186",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "e96bf957142df5948f4eb671211b1682e45c858580ef958c3886c181cc745607",
+        "version": "1c94b43ea2afc94cb7940993dc45f809bdeec653d652d3ecc9dbf17bf1b6238e",
         "warmup_time": -1
     },
     "time.SolverTimeCycle.time_solver": {
@@ -139,7 +139,7 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:149",
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:153",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
@@ -168,7 +168,7 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:116",
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:120",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
@@ -192,7 +192,7 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:82",
+        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:86",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
