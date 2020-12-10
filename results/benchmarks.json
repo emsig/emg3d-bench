@@ -11,7 +11,7 @@
                 "'big'"
             ]
         ],
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:176",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/memory.py:176",
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
@@ -36,7 +36,7 @@
                 "'big'"
             ]
         ],
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:147",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/memory.py:147",
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
@@ -60,7 +60,7 @@
                 "'tri'"
             ]
         ],
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/memory.py:113",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/memory.py:113",
         "timeout": 120,
         "type": "peakmemory",
         "unit": "bytes",
@@ -83,7 +83,7 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:242",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:242",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
@@ -114,7 +114,7 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:213",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:213",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
@@ -139,7 +139,7 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:181",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:181",
         "timeout": 120,
         "type": "time",
         "unit": "seconds",
@@ -168,7 +168,7 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:147",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:147",
         "timeout": 120,
         "type": "time",
         "unit": "seconds",
@@ -192,7 +192,7 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/emg3d-asv/benchmarks/time.py:112",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:112",
         "timeout": 120,
         "type": "time",
         "unit": "seconds",
