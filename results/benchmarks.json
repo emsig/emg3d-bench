@@ -1,6 +1,6 @@
 {
     "memory.ResidualMemory.peakmem_residual": {
-        "code": "class ResidualMemory:\n    def peakmem_residual(self, data, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = Field(grid, data[size]['sfield'])\n        _ = emg3d.solver.residual(grid, model, sfield, sfield.field*0)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[0]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            # Needs VolumeModel from 0.9.1dev4 / d8e98c0 onwards.\n            if INFO < (0, 9, 1, 4):\n                data[size]['model'] = model\n            else:\n                data[size]['model'] = VolumeModel(grid, model, sfield)\n        return data",
+        "code": "class ResidualMemory:\n    def peakmem_residual(self, data, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        if INFO > (1, 0, 0, 0):\n            sfield = Field(grid, data[size]['sfield'].field,\n                           data[size]['sfield'].frequency)\n            efield = Field(grid, data[size]['sfield'].field*0,\n                           data[size]['sfield'].frequency)\n        else:\n            sfield = Field(grid, data[size]['sfield'])\n            efield = Field(grid, data[size]['sfield']*0)\n        if INFO < (0, 17, 1, 7):\n            inp = (grid, model, sfield, efield)\n        else:\n            inp = (model, sfield, efield)\n        _ = emg3d.solver.residual(*inp)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[0]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            # Needs VolumeModel from 0.9.1dev4 / d8e98c0 onwards.\n            if INFO < (0, 9, 1, 4):\n                data[size]['model'] = model\n            elif INFO < (0, 17, 1, 7):\n                data[size]['model'] = VolumeModel(grid, model, sfield)\n            else:\n                data[size]['model'] = VolumeModel(model, sfield)\n        return data",
         "name": "memory.ResidualMemory.peakmem_residual",
         "param_names": [
             "size"
@@ -11,14 +11,14 @@
                 "'big'"
             ]
         ],
-        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/memory.py:176",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/memory.py:212",
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "53223a539c5dc54da5e3e19bc7758a89fa00bf60531f6c36c77e464f28b21cee"
+        "version": "1b26a409f901597ee11823abce854d6f5968cd2a7dc4c4f34d49c0c0f9f7be5b"
     },
     "memory.SmoothingMemory.peakmem_smoothing": {
-        "code": "class SmoothingMemory:\n    def peakmem_smoothing(self, data, lr_dir, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = Field(grid, data[size]['sfield'])\n        efield = Field(grid)\n        inp = (grid, model, sfield, efield, 2, lr_dir)\n        emg3d.solver.smoothing(*inp)\n        _ = emg3d.solver.residual(grid, model, sfield, efield)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[1]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            # Needs VolumeModel from 0.9.1dev4 / d8e98c0 onwards.\n            if INFO < (0, 9, 1, 4):\n                data[size]['model'] = model\n            else:\n                data[size]['model'] = VolumeModel(grid, model, sfield)\n        return data",
+        "code": "class SmoothingMemory:\n    def peakmem_smoothing(self, data, lr_dir, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        if INFO > (1, 0, 0, 0):\n            sfield = Field(grid, data[size]['sfield'].field,\n                           data[size]['sfield'].frequency)\n        else:\n            sfield = Field(grid, data[size]['sfield'])\n        efield = Field(grid)\n        if INFO < (0, 17, 1, 7):\n            inp1 = (grid, model, sfield, efield, 2, lr_dir)\n            inp2 = (grid, model, sfield, efield)\n        else:\n            inp1 = (model, sfield, efield, 2, lr_dir)\n            inp2 = (model, sfield, efield)\n        emg3d.solver.smoothing(*inp1)\n        _ = emg3d.solver.residual(*inp2)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[1]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            # Needs VolumeModel from 0.9.1dev4 / d8e98c0 onwards.\n            if INFO < (0, 9, 1, 4):\n                data[size]['model'] = model\n            elif INFO < (0, 17, 1, 7):\n                data[size]['model'] = VolumeModel(grid, model, sfield)\n            else:\n                data[size]['model'] = VolumeModel(model, sfield)\n        return data",
         "name": "memory.SmoothingMemory.peakmem_smoothing",
         "param_names": [
             "lr_dir",
@@ -36,14 +36,14 @@
                 "'big'"
             ]
         ],
-        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/memory.py:147",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/memory.py:172",
         "timeout": 60.0,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "1cb7c6a7da5a5307ae06173d71c61941ef6ced22ed778ca314f3aa56f508f4f2"
+        "version": "3e4ca16b048dcf2ec227ddcc4869feac3a5a83260eec3147117ae633ea419d18"
     },
     "memory.SolverMemory.peakmem_solver": {
-        "code": "class SolverMemory:\n    def peakmem_solver(self, data, sslsolver, anisotropy):\n        grid = data[anisotropy]['grid']\n        model = data[anisotropy]['model']\n        sfield = Field(grid, data[anisotropy]['sfield'])\n        solve(grid=grid,\n              model=model,\n              sfield=sfield,\n              cycle='F',\n              sslsolver=sslsolver,\n              semicoarsening=True,\n              linerelaxation=True,\n              verb=VERB)\n\n    def setup_cache(self):\n        data = {}\n        for anisotropy in self.params[1]:\n            data[anisotropy] = {}\n            grid, model, sfield = get_model('small', anisotropy)\n            data[anisotropy]['grid'] = grid\n            data[anisotropy]['model'] = model\n            data[anisotropy]['sfield'] = sfield\n        return data",
+        "code": "class SolverMemory:\n    def peakmem_solver(self, data, sslsolver, anisotropy):\n        grid = data[anisotropy]['grid']\n    \n        if INFO > (1, 0, 0, 0):\n            sfield = Field(grid, data[anisotropy]['sfield'].field,\n                           data[anisotropy]['sfield'].frequency)\n        else:\n            sfield = Field(grid, data[anisotropy]['sfield'])\n    \n        inp = {\n            'model': data[anisotropy]['model'],\n            'sfield': sfield,\n            'cycle': 'F',\n            'sslsolver': sslsolver,\n            'semicoarsening': True,\n            'linerelaxation': True,\n            'verb': VERB\n        }\n    \n        if INFO < (0, 17, 1, 7):\n            inp['grid'] = grid\n    \n        solve(**inp)\n\n    def setup_cache(self):\n        data = {}\n        for anisotropy in self.params[1]:\n            data[anisotropy] = {}\n            grid, model, sfield = get_model('small', anisotropy)\n            data[anisotropy]['grid'] = grid\n            data[anisotropy]['model'] = model\n            data[anisotropy]['sfield'] = sfield\n        return data",
         "name": "memory.SolverMemory.peakmem_solver",
         "param_names": [
             "sslsolver",
@@ -60,14 +60,14 @@
                 "'tri'"
             ]
         ],
-        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/memory.py:113",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/memory.py:127",
         "timeout": 120,
         "type": "peakmemory",
         "unit": "bytes",
-        "version": "827818e5d11e670fde68ce2764c9ba847b236b05f37bbdaede10cab3522f45ad"
+        "version": "a3bf591f5b27c95946b9985e2b9e2b3a4f0126fef39e5d49ad80b9dd788626f3"
     },
     "time.ResidualTime.time_residual": {
-        "code": "class ResidualTime:\n    def time_residual(self, data, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = Field(grid, data[size]['sfield'])\n        _ = emg3d.solver.residual(grid, model, sfield, sfield.field*0)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[0]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            # Needs VolumeModel from 0.9.1dev4 / d8e98c0 onwards.\n            if INFO < (0, 9, 1, 4):\n                data[size]['model'] = model\n            else:\n                data[size]['model'] = VolumeModel(grid, model, sfield)\n        return data",
+        "code": "class ResidualTime:\n    def time_residual(self, data, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        if INFO > (1, 0, 0, 0):\n            sfield = Field(grid, data[size]['sfield'].field,\n                           data[size]['sfield'].frequency)\n            efield = Field(grid, data[size]['sfield'].field*0,\n                           data[size]['sfield'].frequency)\n        else:\n            sfield = Field(grid, data[size]['sfield']*0)\n            efield = Field(grid, data[size]['sfield'])\n        if INFO < (0, 17, 1, 7):\n            inp = (grid, model, sfield, efield)\n        else:\n            inp = (model, sfield, efield)\n        _ = emg3d.solver.residual(*inp)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[0]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            # Needs VolumeModel from 0.9.1dev4 / d8e98c0 onwards.\n            if INFO < (0, 9, 1, 4):\n                data[size]['model'] = model\n            elif INFO < (0, 17, 1, 7):\n                data[size]['model'] = VolumeModel(grid, model, sfield)\n            else:\n                data[size]['model'] = VolumeModel(model, sfield)\n        return data",
         "min_run_count": 2,
         "name": "time.ResidualTime.time_residual",
         "number": 0,
@@ -83,15 +83,15 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:242",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:292",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "a2501ac6c2d831aac4fdbd5c5d0402d3fe919d0efeca6dd7df4353c2f93bcbc1",
+        "version": "ace5b8ae98552c93397ddb00f8194b99ed24677a499e2b8b8b41c2397d8a82ba",
         "warmup_time": -1
     },
     "time.SmoothingTime.time_smoothing": {
-        "code": "class SmoothingTime:\n    def time_smoothing(self, data, lr_dir, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        sfield = Field(grid, data[size]['sfield'])\n        efield = Field(grid)\n        inp = (grid, model, sfield, efield, 2, lr_dir)\n        emg3d.solver.smoothing(*inp)\n        _ = emg3d.solver.residual(grid, model, sfield, efield)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[1]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            # Needs VolumeModel from 0.9.1dev4 / d8e98c0 onwards.\n            if INFO < (0, 9, 1, 4):\n                data[size]['model'] = model\n            else:\n                data[size]['model'] = VolumeModel(grid, model, sfield)\n        return data",
+        "code": "class SmoothingTime:\n    def time_smoothing(self, data, lr_dir, size):\n        grid = data[size]['grid']\n        model = data[size]['model']\n        if INFO > (1, 0, 0, 0):\n            sfield = Field(grid, data[size]['sfield'].field,\n                           data[size]['sfield'].frequency)\n        else:\n            sfield = Field(grid, data[size]['sfield'])\n        efield = Field(grid)\n        if INFO < (0, 17, 1, 7):\n            inp1 = (grid, model, sfield, efield, 2, lr_dir)\n            inp2 = (grid, model, sfield, efield)\n        else:\n            inp1 = (model, sfield, efield, 2, lr_dir)\n            inp2 = (model, sfield, efield)\n        emg3d.solver.smoothing(*inp1)\n        _ = emg3d.solver.residual(*inp2)\n\n    def setup_cache(self):\n        data = {}\n        for size in self.params[1]:\n            data[size] = {}\n            grid, model, sfield = get_model(size)\n            data[size]['grid'] = grid\n            data[size]['sfield'] = sfield\n            # Needs VolumeModel from 0.9.1dev4 / d8e98c0 onwards.\n            if INFO < (0, 9, 1, 4):\n                data[size]['model'] = model\n            elif INFO < (0, 17, 1, 7):\n                data[size]['model'] = VolumeModel(grid, model, sfield)\n            else:\n                data[size]['model'] = VolumeModel(model, sfield)\n        return data",
         "min_run_count": 2,
         "name": "time.SmoothingTime.time_smoothing",
         "number": 0,
@@ -114,15 +114,15 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:213",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:252",
         "timeout": 60.0,
         "type": "time",
         "unit": "seconds",
-        "version": "745ccdadf725777f34486e31376d778fa69370bce01b74ec15c9f41428a04bbc",
+        "version": "aedd9d1b58cf4f92bbc092a3f43b85aacbe799e6d28411d3dc653808c663a05b",
         "warmup_time": -1
     },
     "time.SolverTimeCycle.time_solver": {
-        "code": "class SolverTimeCycle:\n    def time_solver(self, data, cycle):\n        grid = data['grid']\n        model = data['model']\n        sfield = Field(grid, data['sfield'])\n        solve(grid=grid,\n              model=model,\n              sfield=sfield,\n              cycle=cycle,\n              sslsolver=False,\n              semicoarsening=True,\n              linerelaxation=True,\n              verb=VERB)\n\n    def setup_cache(self):\n        data = {}\n        grid, model, sfield = get_model('small')\n        data['grid'] = grid\n        data['model'] = model\n        data['sfield'] = sfield\n        return data",
+        "code": "class SolverTimeCycle:\n    def time_solver(self, data, cycle):\n        grid = data['grid']\n        if INFO > (1, 0, 0, 0):\n            sfield = Field(grid, data['sfield'].field,\n                           data['sfield'].frequency)\n        else:\n            sfield = Field(grid, data['sfield'])\n        inp = {\n            'model': data['model'],\n            'sfield': sfield,\n            'cycle': cycle,\n            'sslsolver': False,\n            'semicoarsening': True,\n            'linerelaxation': True,\n            'verb': VERB\n        }\n    \n        if INFO < (0, 17, 1, 7):\n            inp['grid'] = grid\n    \n        solve(**inp)\n\n    def setup_cache(self):\n        data = {}\n        grid, model, sfield = get_model('small')\n        data['grid'] = grid\n        data['model'] = model\n        data['sfield'] = sfield\n        return data",
         "min_run_count": 2,
         "name": "time.SolverTimeCycle.time_solver",
         "number": 0,
@@ -139,15 +139,15 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:181",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:211",
         "timeout": 120,
         "type": "time",
         "unit": "seconds",
-        "version": "06ed1aabe45e0cb20a08c713b86080ea08da4dfe4d9d7955ed31b5fbc7533946",
+        "version": "2c6aaa836bd57cb0b8c2044e3827272b7ebc8725dd363378655986258e0270cf",
         "warmup_time": -1
     },
     "time.SolverTimeMG.time_solver": {
-        "code": "class SolverTimeMG:\n    def time_solver(self, data, semicoarsening, linerelaxation):\n        grid = data['grid']\n        model = data['model']\n        sfield = Field(grid, data['sfield'])\n        solve(grid=grid,\n              model=model,\n              sfield=sfield,\n              cycle='F',\n              sslsolver=False,\n              semicoarsening=semicoarsening,\n              linerelaxation=linerelaxation,\n              verb=VERB)\n\n    def setup_cache(self):\n        data = {}\n        grid, model, sfield = get_model('small')\n        data['grid'] = grid\n        data['model'] = model\n        data['sfield'] = sfield\n        return data",
+        "code": "class SolverTimeMG:\n    def time_solver(self, data, semicoarsening, linerelaxation):\n        grid = data['grid']\n        if INFO > (1, 0, 0, 0):\n            sfield = Field(grid, data['sfield'].field,\n                           data['sfield'].frequency)\n        else:\n            sfield = Field(grid, data['sfield'])\n        inp = {\n            'model': data['model'],\n            'sfield': sfield,\n            'cycle': 'F',\n            'sslsolver': False,\n            'semicoarsening': semicoarsening,\n            'linerelaxation': linerelaxation,\n            'verb': VERB\n        }\n    \n        if INFO < (0, 17, 1, 7):\n            inp['grid'] = grid\n    \n        solve(**inp)\n\n    def setup_cache(self):\n        data = {}\n        grid, model, sfield = get_model('small')\n        data['grid'] = grid\n        data['model'] = model\n        data['sfield'] = sfield\n        return data",
         "min_run_count": 2,
         "name": "time.SolverTimeMG.time_solver",
         "number": 0,
@@ -168,15 +168,15 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:147",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:168",
         "timeout": 120,
         "type": "time",
         "unit": "seconds",
-        "version": "4ee7d0688cda3e71c1cbfdf38e6b926ea016df6e703cb07e5ca512b97a68665e",
+        "version": "9fc0dc00e45229c00ff9fc2adb095e14f86a570a7fe4735d153f83c05ba34f50",
         "warmup_time": -1
     },
     "time.SolverTimeSSL.time_solver": {
-        "code": "class SolverTimeSSL:\n    def time_solver(self, data, sslsolver):\n        grid = data['grid']\n        model = data['model']\n        sfield = Field(grid, data['sfield'])\n        solve(grid=grid,\n              model=model,\n              sfield=sfield,\n              cycle='F',\n              sslsolver=sslsolver,\n              semicoarsening=True,\n              linerelaxation=True,\n              verb=VERB)\n\n    def setup_cache(self):\n        data = {}\n        grid, model, sfield = get_model('small')\n        data['grid'] = grid\n        data['model'] = model\n        data['sfield'] = sfield\n        return data",
+        "code": "class SolverTimeSSL:\n    def time_solver(self, data, sslsolver):\n        grid = data['grid']\n        if INFO > (1, 0, 0, 0):\n            sfield = Field(grid, data['sfield'].field,\n                           data['sfield'].frequency)\n        else:\n            sfield = Field(grid, data['sfield'])\n        inp = {\n            'model': data['model'],\n            'sfield': sfield,\n            'cycle': 'F',\n            'sslsolver': sslsolver,\n            'semicoarsening': True,\n            'linerelaxation': True,\n            'verb': VERB\n        }\n    \n        if INFO < (0, 17, 1, 7):\n            inp['grid'] = data['grid']\n    \n        solve(**inp)\n\n    def setup_cache(self):\n        data = {}\n        grid, model, sfield = get_model('small')\n        data['grid'] = grid\n        data['model'] = model\n        data['sfield'] = sfield\n        return data",
         "min_run_count": 2,
         "name": "time.SolverTimeSSL.time_solver",
         "number": 0,
@@ -192,11 +192,11 @@
         "processes": 2,
         "repeat": 0,
         "sample_time": 0.01,
-        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:112",
+        "setup_cache_key": "/home/dtr/Codes/benchmarks/emg3d-asv/benchmarks/time.py:124",
         "timeout": 120,
         "type": "time",
         "unit": "seconds",
-        "version": "6f404fdb50aeeac8e8b6145add1cb0df83a25a122781630eda29bea7f7304796",
+        "version": "29e05fc4f380118e3221d4425b07cd569b0204af3401dee976ffc34c060b54fd",
         "warmup_time": -1
     },
     "version": 2
